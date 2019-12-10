@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>仓库流水</title>
+
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+    <link href="../css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../css/animate.min.css" rel="stylesheet">
+    <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/style.min.css?v=4.0.0" rel="stylesheet">
+    <link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <base target="_blank">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>订单列表 </h5>
+            </div>
+            <div class="ibox-content" style="padding-bottom: 40px;">
+                <form id="orderForm" method="get" action="table" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="form-div">
+                            <label class="control-label">入库/出库：</label>
+                            <div class="label-right">
+                                <select class="form-control" name="flag">
+                                    <option value="">全部</option>
+                                    <option value="1">入库</option>
+                                    <option value="0">出库</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-div">
+                            <label class="control-label">商品名称：</label>
+                            <div class="label-right">
+                                <input name="goodsName" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-div">
+                            <label class="control-label">开始日期：</label>
+                            <div class="label-right">
+                                <input placeholder="开始日期" class="form-control layer-date" name="startTime" id="start">
+                            </div>
+                        </div>
+                        <div class="form-div">
+                            <label class="control-label">结束日期：</label>
+                            <div class="label-right">
+                                <input placeholder="结束日期" class="form-control layer-date" name="endTime" id="end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div style="left:70%;top:10px;position:relative;">
+                            <button class="btn btn-primary" id="orderFormSubmit" type="button" style="margin-right: 30px;" onclick="orderSubmit(1)">查询</button>
+                            <button class="btn btn-white" type="reset" style="margin-right: 30px;">重置</button>
+                             <button class="btn btn-info" id="add" type="button"  data-toggle="modal" data-target="#orderModal">添加</button>
+                            </div>
+                        </div>
+                </form>
+                <div class="modal inmodal fade" id="orderModal" tabindex="-1" role="dialog"  aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title">添加订单</h4>
+                                <!--<small class="font-bold">这里可以显示副标题。</small>-->
+                            </div>
+                            <div class="modal-body">
+                                <form id="orderAddForm" method="post" action="add" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label">入库/出库：</label>
+                                        <div class="row">
+                                            <div class="col-lg-10">
+                                            <select class="form-control" name="flag">
+                                                <option value="">全部</option>
+                                                <option value="1">入库</option>
+                                                <option value="0">出库</option>
+                                            </select>
+                                        </div>
+                                        </div>
+                                        </div>
+                                    <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="control-label">商品名称：</label>
+                                            <div class="row">
+                                                <div class="col-lg-10">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" autocomplete="off" id="goodsNameSelect" name="goodsId">
+                                                        <div class="input-group-btn" >
+                                                            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown">
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                            </ul>
+                                                        </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="control-label">单价（元）：</label>
+                                            <div class="row">
+                                                <div class="col-lg-10">
+                                                <input name="price" type="number" class="form-control">
+                                            </div>
+                                            </div>
+                                        </div>
+                                    <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="control-label">数量：</label>
+                                            <div class="row">
+                                                <div class="col-lg-10">
+                                                <input name="num" type="number" class="form-control">
+                                        </div>
+                                        </div>
+                                        </div>
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                                <button type="button" class="btn btn-primary" onclick="addOrder()">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div id="order_table"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../plugins/laydate/laydate.js"></script>
+<script src="../js/jquery.min.js?v=2.1.4"></script>
+<script src="../js/bootstrap.min.js?v=3.3.5"></script>
+<script src="../js/content.min.js?v=1.0.0"></script>
+<script src="../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../js/bootstrap-paginator.js"></script>
+<script src="../js/plugins/suggest/bootstrap-suggest.min.js"></script>
+<script src="../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../js/plugins/validate/messages_zh.min.js"></script>
+<script src="../js/validate.js?random=20181126"></script>
+<script src="../js/jquery.serializejson.min.js"></script>
+<script src="../js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    laydate.render({
+        elem: '#start' //指定元素
+    });
+    laydate.render({
+        elem: '#end' //指定元素
+    });
+    $(document).ready(function () {
+        $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+        $("#order_table").load("table");
+    });
+    function orderSubmit(pageIndex) {
+        var param = $("#orderForm").serialize();
+        var action = $("#orderForm").attr("action");
+        var url = action+"?pageIndex="+pageIndex;
+        if(param != null && param != ""){
+            url +="&"+param;
+        }
+        $("#order_table").load(url);
+    }
+    $("#goodsNameSelect").bsSuggest({
+        getDataMethod: "firstByUrl",
+        url: "../goods/select",
+        idField: "id",
+        keyField: "goodsName",
+        effectiveFields: ["goodsName","model"],
+        searchFields:["goodsName"],
+        inputWarnColor: "rgba(255,0,0,.1)",
+        listAlign: "left"
+    });
+    function addOrder() {
+        $('#orderAddForm').valid();
+        var param = $('#orderAddForm').serializeJSON();
+        param.goodsId = $('#goodsNameSelect').attr("data-id");
+        param.price = param.price * 100;
+        var action = $("#orderAddForm").attr("action");
+        $.ajax({
+            url: action,
+            type: "POST",
+            data: JSON.stringify(param),
+            contentType: "application/json; charset=utf-8",
+            success: function (message) {
+                console.log(message);
+                if (message.code == "0000"){
+                    orderSubmit(1);
+                }else{
+                    alert(message.msg);
+                }
+            }
+        });
+    }
+
+</script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+</body>
+
+</html>

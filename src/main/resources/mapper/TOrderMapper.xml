@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jianghua.warehousemanager.mapper.TOrderMapper">
+  <resultMap id="BaseResultMap" type="com.jianghua.warehousemanager.entity.TOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="flag" jdbcType="VARCHAR" property="flag" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="total_price" jdbcType="INTEGER" property="totalPrice" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <select id="selectByMap" parameterType="map" resultType="map">
+    SELECT
+    o.id,
+    g.id AS goodsId,
+    g.goods_name as goodsName,
+    g.model,
+    g.unit,
+    o.flag,
+    o.num,
+    o.price / 100 AS price,
+    g.stock,
+    o.total_price / 100 AS totalPrice,
+    DATE_FORMAT(o.create_time,'%Y-%m-%d') as createTime
+    FROM
+    `t_order` o LEFT JOIN  `t_goods` g ON o.goods_id = g.id
+    where
+        o.state =  1
+      <if test="goodsName !=null and goodsName != ''">
+        AND g.goods_name LIKE  concat('%',#{goodsName},'%')
+      </if>
+      <if test="flag !=null and flag != ''">
+        AND o.flag = #{flag}
+      </if>
+      <if test="start !=null ">
+        AND o.create_time &gt; #{start}
+      </if>
+      <if test="end !=null ">
+        AND o.create_time &lt; #{end}
+      </if>
+  </select>
+</mapper>

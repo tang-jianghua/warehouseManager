@@ -1,0 +1,66 @@
+<form id="orderAddForm" method="post" action="add" class="form-horizontal">
+    <div class="form-group">
+        <div >
+            <label >入库/出库：</label>
+                <select class="form-control" name="flag">
+                    <option value="">全部</option>
+                    <option value="1">入库</option>
+                    <option value="0">出库</option>
+                </select>
+        </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="control-label">商品名称：</label>
+                <input type="text" class="form-control" id="goodsNameSelect" name="goodsId">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="control-label">单价（元）：</label>
+                <input name="price" type="number" class="form-control" step="0.01">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="control-label">数量：</label>
+                <input name="num" type="number" class="form-control">
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $("#goodsNameSelect").bsSuggest({
+        indexId: 2,
+        indexKey: 1,
+        data: {
+            "value": [{
+                "id": "0",
+                "word": "lzw",
+                "description": "http://lzw.me"
+            }, {
+                "id": "1",
+                "word": "lzwme",
+                "description": "http://w.lzw.me"
+            }, {
+                "id": "2",
+                "word": "meizu",
+                "description": "http://www.meizu.com"
+            }, {
+                "id": "3",
+                "word": "flyme",
+                "description": "http://flyme.meizu.com"
+            }],
+            "defaults": "http://lzw.me"
+        }
+    });
+
+</script>

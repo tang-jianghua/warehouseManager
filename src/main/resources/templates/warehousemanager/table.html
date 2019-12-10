@@ -1,0 +1,97 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>物品名称</th>
+        <th>规格型号</th>
+        <th>单位</th>
+        <th>库存</th>
+        <th>单价（元）</th>
+        <th>总计（元）</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <#list goodsList as item>
+        <tr>
+            <td>${item_index+1}</td>
+            <td>${item.goodsName}</td>
+            <td>${item.model}</td>
+            <td>${item.unit}</td>
+            <td>${item.stock}</td>
+            <td>${item.price}</td>
+            <td>${item.totalPrice}</td>
+            <td>
+                <!--<a class="btn btn-warning">修改</a>-->
+                <a class="btn btn-danger" onclick="remove(${item.id})">删除</a>
+            </td>
+        </tr>
+    </#list>
+    </tbody>
+</table>
+<div id="mypage" class="warehouseSubmit">
+</div>
+<script type="text/javascript">
+    $('#mypage').append("<h5 style='float: left;margin-left: 30px'>共&nbsp;${totalRow}&nbsp; 条  ${totalPage}&nbsp;页</h5>");
+    $('#mypage').append("<ul id=\"pageId\" style='float: right;margin-top: 0px;margin-bottom: 0px;'></ul>");
+    $('#pageId').bootstrapPaginator({
+        bootstrapMajorVersion: 3,//bootstrap版本
+        currentPage: ${pageIndex},//当前页码
+        totalPages: ${totalPage},//总页数
+        size:"normal",//应该是页眉的大小。
+        numberOfPages: ${pageNum},//一页显示几个按钮
+        alignment:"right",
+        itemTexts: function (type, page, current) {
+            switch (type) {
+                case "first": return "首页";
+                case "prev": return "上一页";
+                case "next": return "下一页";
+                case "last": return "末页";
+                case "page": return page;
+            }
+        },
+        onPageClicked: function (event, originalEvent, type, page) {
+            var submit = $('#mypage').attr("class");
+            var func = eval(submit);
+            func(page);
+        }
+    });
+
+
+    function remove(id,goodsId) {
+        swal({
+            title: "您确定要删除这条信息吗",
+            text: "删除后将无法恢复，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function(isConfirm) {
+            if(isConfirm) {
+                var param = {
+                    "id":id
+                };
+                $.ajax({
+                    url: "remove",
+                    type: "POST",
+                    data: JSON.stringify(param),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (message) {
+                        if (message == "success"){
+                            swal("删除成功！", "您已经删除了这条信息。", "success")
+                            warehouseSubmit(1);
+                        }else{
+                            swal("操作失败", "error")
+                        }
+                    }
+                });
+            } else {
+                swal("已取消", "", "success")
+            }
+        })
+
+    }
+</script>

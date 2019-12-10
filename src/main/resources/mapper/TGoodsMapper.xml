@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jianghua.warehousemanager.mapper.TGoodsMapper">
+  <resultMap id="BaseResultMap" type="com.jianghua.warehousemanager.entity.TGoods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="old_price" jdbcType="INTEGER" property="oldPrice" />
+    <result column="total_price" jdbcType="INTEGER" property="totalPrice" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <select id="selectByMap" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+      id,
+      goods_name,
+      model,
+      unit,
+      price/100 AS price,
+      stock,
+      old_price/100 AS old_price,
+      total_price/100 AS total_price,
+      update_time,
+      create_time
+    FROM `t_goods`
+    <where>
+      AND state =  1
+      <if test="goodsName !=null and goodsName != ''">
+        AND goods_name LIKE  concat('%',#{goodsName},'%')
+      </if>
+      <if test="updateTime !=null and updateTime != ''">
+        AND DATE_FORMAT(update_time,'%Y-%m-%d') = #{updateTime}
+      </if>
+    </where>
+  </select>
+  
+  <update id="updateGoodsStock" parameterType="com.jianghua.warehousemanager.entity.TGoods">
+    UPDATE
+    t_goods,
+    (SELECT
+    IF(
+    SUM(
+    CASE
+    flag
+    WHEN '1'
+    THEN num
+    WHEN '0'
+    THEN - num
+    END
+    ) &lt; 0,
+    0,
+    SUM(
+    CASE
+    flag
+    WHEN '1'
+    THEN num
+    WHEN '0'
+    THEN - num
+    END
+    )
+    ) AS num
+    FROM
+    t_order
+    WHERE state = 1 AND goods_id = #{id}) a
+    SET
+    <if test="price != null">
+    price = #{price},
+    </if>
+    stock = IFNULL(a.num,0),
+    total_price = IFNULL(price * a.num,0),
+    update_time = #{updateTime}
+  </update>
+</mapper>

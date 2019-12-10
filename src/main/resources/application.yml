@@ -1,0 +1,48 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://192.168.0.86:3306/waredb
+      username: root
+      password: root
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      filters: stat,wall
+      maxActive: 20
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 1 from dual
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: false  #如果是oracle 则可以设置为true  如果是mysql则设置false 分库分表较多的数据库，建议配置为false。
+      maxOpenPreparedStatements: 20
+  freemarker:
+    cache: false
+    suffix: .html
+    templateEncoding: UTF-8
+    templateLoaderPath: classpath:/templates/
+    charset: UTF-8
+    content-type: text/html
+    allow-request-override: false
+    check-template-location: true
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: false
+
+
+mybatis:
+  type-aliases-package: com.jianghua.warehousemanager.enetity
+  mapper-locations: classpath:mapper/*.xml
+  mappers: com.jianghua.warehousemanager.common.WareBaseMapper
+  identity: MYSQL
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
